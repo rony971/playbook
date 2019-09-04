@@ -1,0 +1,35 @@
+---
+- name: "Installation du service nginx"
+  hosts: all
+  tasks:
+
+   - name: "desinstallation apache package"
+     yum:
+        name: "httpd"
+        state: "absent"
+
+   - name: "update package"
+     yum:
+        update_cache: yes
+
+   - name: "ajout epel"
+     yum: 
+        name: "epel-release"
+        state: "present"
+
+   - name: "Installation de NGINX"
+     yum:
+        name: nginx
+        state: "present"
+
+   - name: "Start NGINX service"
+     service:
+        name: nginx
+        state: "started"
+        enabled: yes
+
+   - name: "Copy index.html"
+     copy:
+       src: "index.html"
+       dest: "/usr/share/nginx/html"
+
