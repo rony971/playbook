@@ -1,6 +1,6 @@
 ---
 - name: "Installation du service nginx"
-  hosts: all
+  hosts: 192.168.88.138
   tasks:
 
 
@@ -41,6 +41,8 @@
      copy:
          src: "nginx.conf"
          dest: "/etc/nginx"
+     notify:
+         - restart nginx
 
    - name: "Copy index.html pr org"
      copy:
@@ -54,9 +56,10 @@
         dest: "/usr/share/nginx/rony.edu/html"
         mode: '0755'
 
+  handlers:
+    - name: restart nginx
+      service:
+         name: nginx
+         state: restarted
 
-   - name: "Start NGINX service"
-     service:
-        name: nginx
-        state: "restarted"
-        enabled: yes
+
