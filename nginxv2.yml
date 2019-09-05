@@ -1,0 +1,62 @@
+---
+- name: "Installation du service nginx"
+  hosts: all
+  tasks:
+
+
+   - name: "update package"
+     yum:
+        update_cache: yes
+
+   - name: "ajout epel"
+     yum: 
+        name: "epel-release"
+        state: "present"
+
+   - name: "Installation de NGINX"
+     yum:
+        name: nginx
+        state: "present"
+ 
+ 
+   - name: "Start NGINX service"
+     service:
+        name: nginx
+        state: "started"
+        enabled: yes    
+
+   - name: "Directory site1"
+     file:
+        path: "/usr/share/nginx/rony.org/html"
+        state: directory
+        mode: '0755'
+
+   - name: "Directory site2"
+     file:
+        path: "/usr/share/nginx/rony.edu/html"
+        state: directory
+        mode: '0755'
+
+   - name: "copy du fichier de nginx.conf"
+     copy:
+         src: "nginx.conf"
+         dest: "/etc/nginx"
+
+   - name: "Copy index.html pr org"
+     copy:
+         src: "/home/works/testplaybook/org/index.html"
+         dest: "/usr/share/nginx/rony.org/html"
+         mode: '0755'
+
+   - name: "Copy index.html pr edu"
+     copy: 
+        src: "/home/works/testplaybook/edu/index.html"
+        dest: "/usr/share/nginx/rony.edu/html"
+        mode: '0755'
+
+
+   - name: "Start NGINX service"
+     service:
+        name: nginx
+        state: "restarted"
+        enabled: yes
