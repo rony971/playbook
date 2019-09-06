@@ -1,0 +1,28 @@
+---
+- name: "Installation du service nginx"
+  hosts: 192.168.88.138
+  vars:
+    user: cgi
+  tasks:
+
+
+   - name: "Installation tools"
+     yum: name= "{{ item }}" update_cache=yes state=latest
+     with_items:
+       - git
+       - zsh 
+       - sudo
+
+   - name: Creation de user "{{ user }}"
+     when: user is defined
+     user: name={{ user }}  shell=/usr/bin/bash 
+
+   - name: ajout cle ssh
+     when: user is defined   
+     authorized_key: user={{ user }} key={{ lookup('file','/root/.ssh/id_rsa.pub')}}     
+     
+   - name: envoie de fichier sudo "{{ user }}"
+     template: src=sudoers.j2 dest=/etc/sudoers.d/{{ user }}-sudoers
+     
+     
+
