@@ -1,0 +1,33 @@
+---
+- name: "Installation du service nginx"
+  hosts: all
+  tasks:
+  
+   - name: "update all"
+     yum:
+       update_cache: yes
+
+   - name: "upgrade all"
+     yum:
+       name: '*'
+       state: latest
+   - name: "ajout epel"
+     yum:
+        name: "epel-release"
+        state: "present"
+ 
+   - name: "update package"
+     yum:
+        name: ['htop','git','zsh','sudo','vim','wget']
+        state: latest
+        
+ 
+
+
+
+
+
+
+
+
+  
