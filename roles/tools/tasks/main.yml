@@ -1,0 +1,9 @@
+---
+# tasks file for tools
+
+   - name: "Installation tools"
+     yum: name= "{{ item }}" update_cache=yes state=latest
+     with_items:
+       - git
+       - zsh 
+       - sudo

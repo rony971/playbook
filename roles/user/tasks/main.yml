@@ -1,0 +1,13 @@
+---
+# tasks file for user
+
+   - name: Creation de user "{{ user }}"
+     when: user is defined
+     user: name={{ user }}  shell=/usr/bin/bash 
+
+   - name: ajout cle ssh
+     when: user is defined   
+     authorized_key: user={{ user }} key={{ lookup('file','/root/.ssh/id_rsa.pub')}}     
+     
+   - name: envoie de fichier sudo "{{ user }}"
+     template: src=sudoers.j2 dest=/etc/sudoers.d/{{ user }}-sudoers
