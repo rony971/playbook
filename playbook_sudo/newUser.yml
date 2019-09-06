@@ -1,0 +1,23 @@
+---
+- name: "Installation du service nginx"
+  hosts: 192.168.88.138
+  tasks:
+
+
+   - name: "Ajout de l'utilisateur lobo"
+     user:
+        name: ajc
+        shell: /bin/zsh
+
+   - name: "Envoie de la clef publique du master"
+     authorized_key:
+       user: ajc
+       state: present
+       key: "{{ lookup('file', '/root/.ssh/id_rsa.pub')}}"     
+   
+   - name: "Envoie fichier config sudo"
+     copy:
+        src: "confsudo"
+        dest: "/etc/sudoers.d"
+     
+         

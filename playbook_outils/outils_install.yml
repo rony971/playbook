@@ -18,7 +18,7 @@
  
    - name: "update package"
      yum:
-        name: ['htop','git','zsh','sudo','vim','wget']
+        name: ['htop','git','zsh','sudo','vim','wget'] 
         state: latest
         
  
