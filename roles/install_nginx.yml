@@ -1,0 +1,13 @@
+---
+- name: Nginx chez utilisateur
+  hosts: 192.168.88.144
+  vars:
+     user: ajc
+     domain: rony.org
+  roles: 
+      - tools
+      - user
+      - nginx
+
+
+

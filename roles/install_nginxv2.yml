@@ -1,0 +1,13 @@
+---
+- name : installation nginx
+  hosts: 192.168.88.144
+  vars :
+   user : toro
+   domains :
+    - ajc.local
+    - toto.gov
+
+  roles :
+   - tools
+   - user
+   - nginxv2

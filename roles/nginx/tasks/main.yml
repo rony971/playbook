@@ -1,0 +1,64 @@
+---
+# tasks file for nginx
+#
+  - name: Update all
+    apt:
+      update_cache: yes
+
+  - name: Installation de NGINX
+    apt:
+      name: nginx
+      state: "present"
+
+
+  - name: Demmarage du service Nginx
+    service:
+       name: nginx
+       state: started
+       enabled: yes
+       
+  - name: "Creation du dossier du domaine"
+    become: yes
+    file:
+        path: "/var/www/{{ domain }}/html"
+        state: directory
+        owner: "{{ user }}"
+        group: "{{ user }}"
+    notify:
+        - restart nginx
+
+
+        
+  - name: "Creation du dossier de travail"
+    file:
+        path: "/home/{{ user }}/{{ domain }}-local"
+        state: directory
+        owner: "{{ user }}"
+        group: "{{ user }}"
+        
+        
+  - name: "Creation du lien symbolique"
+    become: yes
+    file:
+        src: "/home/{{ user }}/{{ domain }}-local"
+        dest: "/var/www/{{ domain }}/html"
+        state: link
+        force: true
+    notify:
+        - restart nginx
+        
+  - name: creation conf nginx
+    template: src=nginx.j2 dest=/etc/nginx/sites-available/{{ domain }}
+    
+  - name: activation du domain
+    become: yes
+    file:
+        src: "/etc/nginx/sites-available/{{ domain }}"
+        dest: "/etc/nginx/sites-enabled/{{ domain }}" 
+        state: link
+        force: true
+    notify:
+        - restart nginx
+        
+  
+        

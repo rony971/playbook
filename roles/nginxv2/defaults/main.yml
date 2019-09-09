@@ -1,0 +1,13 @@
+---
+# defaults file for nginxv2
+
+php_packages :
+ - php7.3
+ - php7.3-gd
+ - php7.3-cgi
+ - php7.3-fpm
+ - php7.3-mysql
+ 
+ 
+ 
+ 
