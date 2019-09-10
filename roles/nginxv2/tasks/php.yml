@@ -13,7 +13,7 @@
 - name : "configuration de php : date&timezone"
   lineinfile:
     path: /etc/php/7.3/fpm/php.ini
-    regexp: '^;date.timezone'
+    regexp: 'date.timezone'
     line: date.timezone = {{ php_timezone }}
 
     
