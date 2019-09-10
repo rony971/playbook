@@ -21,3 +21,4 @@
 - name : installation php
   include : php.yml
   with_items : "{{ php_packages }}"
+  notify: restart php

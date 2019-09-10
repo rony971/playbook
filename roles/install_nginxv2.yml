@@ -2,10 +2,13 @@
 - name : installation nginx
   hosts: 192.168.88.144
   vars :
-   user : toro
+   user : cgo
    domains :
-    - ajc.local
-    - toto.gov
+      
+    - domain: ta.fr
+      php: yes
+    - domain: to.com
+      php: no
 
   roles :
    - tools
