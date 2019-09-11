@@ -1,0 +1,98 @@
+---
+- name: "Installation de DOCKER"
+  hosts: 192.168.88.144
+  vars:
+     create_containers: 4
+     default_container_name: docker
+     default_container_image: ubuntu
+     default_container_command: sleep 1d
+     
+  tasks:
+ 
+
+    - name: "Update Package"
+      apt:
+          update_cache: yes
+          
+#----------------------------------------------------------------------------------------------------------------------------------------          
+    - name: Install packages for apt add repository over HTTPS
+      apt:
+          name: "{{ packagesdep }}"
+          force_apt_get: yes
+          state: latest
+          update_cache: yes
+      vars:
+          packagesdep:
+          - git
+          - apt-transport-https
+          - ca-certificates
+          - wget
+          - software-properties-common
+          - gnupg2
+          - curl
+          
+          
+    - name: Add Docker GPG apt Key
+      apt_key:
+        url: https://download.docker.com/linux/debian/gpg
+        state: present
+        
+
+      
+    - name: add docker official repository for Debian Stretch
+      apt_repository:
+          repo: deb [arch=amd64] https://download.docker.com/linux/debian buster stable
+          state: present
+          
+    - name: Index new repo into the cache
+      apt:
+        name: "*"
+        state: latest
+        update_cache: yes
+        force_apt_get: yes
+          
+    - name: "Installation de docker-ce-cli "
+      apt: 
+        name: docker-ce-cli  
+        state: latest
+        
+    - name: "Installation de docker-ce "
+      apt: 
+        name: docker-ce  
+        state: latest
+    
+    - name: "Installation de containerd.io "
+      apt: 
+        name: containerd.io  
+        state: latest
+     
+    - name: "Installation de pip "
+      apt: 
+        name: python-pip  
+        state: latest   
+        
+    - name: "Installation de pip "
+      apt: 
+        name: python-docker 
+        state: latest       
+        
+    - name: pull an image
+      docker_image:
+          name: "{{ default_container_image }}"
+          source: pull  
+          
+    - name: creation du container
+      docker_container:
+        name: "{{ default_container_name }}{{ item }}"
+        image: "{{ default_container_image }}"
+        command: "{{ default_container_command }}"
+        #state: present
+      with_sequence: count={{ create_containers }}
+      
+      
+      
+  handlers:
+    - name: restart docker
+      service:
+         name: docker
+         state: restarted    
