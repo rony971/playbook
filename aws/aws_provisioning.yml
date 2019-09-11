@@ -1,0 +1,16 @@
+---
+- hosts: local
+  connection: local
+  gather_facts: False
+  vars:
+    instance_type: t2.micro
+    security_group: webservers_sg
+    image: ami-5d022738
+    keypair: id_one 
+    region: us-west-2
+    count: 1
+  vars_files:
+    - aws_keys.yml
+    
+    
+    
