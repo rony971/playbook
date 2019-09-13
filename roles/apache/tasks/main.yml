@@ -1,0 +1,24 @@
+---
+#tasks file for apache
+
+
+- name: "Mise à jour des packages"
+  become: yes
+  apt:
+    update_cache: yes
+          
+- name: "Installation d'apache2"
+  become: yes
+  apt:
+    name: apache2
+    state: "present"
+
+- name: "Demmarage d'apache2"
+  become: yes
+  service: name=apache2 state=started enabled=true
+
+- name: "Installation de PHP"
+  include: php.yml
+  with_items : "{{ php_packages }}"
+
+

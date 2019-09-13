@@ -1,0 +1,22 @@
+---
+# tasks file for confmysql
+#
+
+#Installation de la base de donnée MediaWIKI
+
+- name: "mediawiki database"
+  mysql_db:
+name: "{{ mediawiki_db_name }}"
+state: present
+
+
+#Création d'un acces utilisateur et attribution de privilège
+
+- name: "mediawiki user+privileges"
+  mysql_user:
+ name: "{{mediawiki_db_user}}"
+ password: "{{mediawiki_db_password}}"
+ priv: "{{mediawiki_db_name}}.*:ALL"
+ host:  "hosts:apache"
+ state: present
+    

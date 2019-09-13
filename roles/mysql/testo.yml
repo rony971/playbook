@@ -1,0 +1,5 @@
+- name: " Installation de mysql sur ubuntu server"
+  hosts: mysql
+  roles:
+     - mysql
+

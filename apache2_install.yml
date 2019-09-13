@@ -1,0 +1,22 @@
+---
+- name: "Test de sudo sur ubuntu"
+  hosts: apache
+  vars:
+    remote_user: rony
+    become: yes
+    become_method: sudo
+    ansible_become_pass: 'qjc'
+  
+  
+  tasks:
+ 
+   - name: "update package"
+     apt:
+        update_cache: yes
+        
+   - name: "Install apache2"
+     apt:
+        name: apache2
+        state: present
+        
+        

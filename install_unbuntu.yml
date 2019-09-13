@@ -1,0 +1,20 @@
+---
+- name: "Test de sudo sur ubuntu"
+  hosts: 192.168.88.150
+  vars:
+    remote_user: rony
+    become: yes
+    become_method: sudo
+    ansible_become_pass: 'qjc'
+  
+  
+  tasks:
+ 
+   - name: "update package"
+     apt:
+        update_cache: yes
+ 
+   - name: "Installation de VIM"
+     apt:
+          name: vim
+          state: "present"

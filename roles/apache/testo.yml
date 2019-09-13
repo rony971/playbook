@@ -1,0 +1,5 @@
+---
+- name: " Installation d'apache2 sur ubuntu server"
+  hosts: apache
+  roles:
+     - apache

@@ -1,0 +1,7 @@
+---
+# defaults file for mysql
+#
+ansible_user: rony
+become: yes
+become_method: sudo
+ansible_become_pass: 'qjc'

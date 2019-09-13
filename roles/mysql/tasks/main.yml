@@ -1,0 +1,26 @@
+---
+# tasks file for mysql
+#
+#
+- name: "Mise à jour des packages"
+  become: yes
+  apt:
+    update_cache: yes
+
+
+
+- name: "Installation de mysql"
+  become: yes
+  apt:
+    name: mysql-server
+    state: latest
+
+- name: "Installation du module python"
+  become: yes
+  apt:
+    name: python-mysqldb
+    state: latest
+
+- name: "Demmarage de mysql"
+  become: yes
+  service: name=mysql state=started enabled=true                 
