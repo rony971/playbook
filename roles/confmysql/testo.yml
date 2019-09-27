@@ -1,5 +1,5 @@
 ---
-- name: " Installation d'apache2 sur ubuntu server"
+- name: " Configuration de MySQL"
   hosts: all
   roles:
      -  confmysql

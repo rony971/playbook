@@ -18,9 +18,9 @@ mediawiki_admin_password: 'ajc'
 
 
  
- # nom du Mediawiki et son titre
- mediawiki_name: "mediawiki"
- mediawiki_title: "ELS"
+# nom du Mediawiki et son titre
+mediawiki_name: "mediawiki"
+mediawiki_title: "ELS"
 
 
 

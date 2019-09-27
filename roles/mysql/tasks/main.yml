@@ -23,4 +23,28 @@
 
 - name: "Demmarage de mysql"
   become: yes
-  service: name=mysql state=started enabled=true                 
+  service: name=mysql state=started enabled=true   
+  
+- name: "Installation de PIP"
+  become: yes
+  apt:
+    name: python-pip
+    state: latest
+    
+    
+- name: "Install outils"
+  become: yes
+  apt:
+    name: python-dev
+    state: latest
+    
+- name: "Install outil"
+  become: yes
+  apt:
+    name: libmysqlclient-dev
+    state: latest
+    
+- name: "Install Mysql-python"
+  become: yes
+  pip:
+    name: MySQL-python            
