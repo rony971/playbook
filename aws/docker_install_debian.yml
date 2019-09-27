@@ -1,0 +1,172 @@
+---
+- name: "Install sur mon ec2"
+  hosts: last
+  vars:
+    #remote_user: admin
+    #become: yes
+    #become_method: sudo
+    image: "gitlab/gitlab-ce"
+    gitlab_ssh_port: "2222"
+    gitlab_https_port: "443"
+    gitlab_http_port: "80"
+    
+    gitlab_config_dir: "/srv/gitlab/config"
+    gitlab_logs_dir: "/srv/gitlab/logs"
+    gitlab_data_dir: "/srv/gitlab/data"
+    
+
+  
+  
+  tasks:
+   
+   #Etape 1: mise à jour de tout les packages   
+   - name: "update package"
+     apt:
+        update_cache: yes
+        
+                        
+   #Etape 2: Installation de packets necessaires
+   - name: Installation des packets necessaires pour la suite
+     apt:
+          name: "{{ packagesdep }}"
+          force_apt_get: yes
+          state: latest
+          update_cache: yes
+     vars:
+          packagesdep:
+          - git
+          - wget
+          - vim
+          - zsh
+          - curl
+          - gnupg2
+          - software-properties-common
+          - ca-certificates
+          - apt-transport-https
+   
+   
+   #---------------------------------------------------------------------------------------------------------#       
+   #Il y a plusieurs manière d'ajouter la clef, shell ou en utilisant le module apt_key                      #
+   ###########################################################################################################
+         
+   #- name: Add Docker GPG apt Key
+   #  apt_key:
+   #     url: https://download.docker.com/linux/debian/gpg
+   #     state: present  
+             
+   - name: Add Docker GPG apt Key
+     shell: curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
+  
+       
+   - name: fingerprint 
+     shell: apt-key fingerprint 0EBFCD88
+   
+   
+   
+   #---------------------------------------------------------------------------------------------------------#       
+   #Il y a plusieur maniere d'ajouter le repo                                                                #
+   ###########################################################################################################
+            
+   #- name: add docker official repository for Debian Stretch
+   #   apt_repository:
+   #       repo: deb [arch=amd64] https://download.docker.com/linux/debian buster stable
+   #       state: present
+            
+   - name: dd docker official repository
+     shell: add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"
+     
+             
+ 
+ 
+   #On update le repo à nouveau on peut faire un handler avec   
+   - name: "update package 2"
+     apt:
+        update_cache: yes
+        
+   
+   - name: "Installation de docker-ce "
+     apt: 
+        name: docker-ce 
+        state: latest
+        
+   - name: "Installation de docker-ce-cli "
+     apt: 
+        name: docker-ce-cli  
+        state: latest
+        
+   - name: "Installation de containerd.io "
+     apt: 
+        name: containerd.io  
+        state: latest   
+        
+   - name: "Installation de python-pip "
+     apt: 
+        name: python-pip  
+        state: latest   
+        
+   - name: "Installation de  python-setuptools "
+     apt: 
+       name: python-setuptools  
+       state: latest   
+        
+        
+   - name: "Installation de python-docker "
+     apt: 
+        name: python-docker 
+        state: latest     
+   
+   
+   - name: "pip instal virtualenv"
+     pip:
+      name: "virtualenv"
+      
+      
+      
+   - name: "pip install docker"
+     pip:
+      name: "docker"
+      virtualenv: "/usr/local/bin/docker/virtualenv"
+      
+     
+             
+   - name: pull de l'image {{ image }}
+     docker_image:
+        name: "{{ image }}"
+        source: pull  
+        
+   - name: Create gitlab directories
+     file: path={{ item }} recurse=yes state=directory
+     with_items:
+     - "{{ gitlab_config_dir }}"
+     - "{{ gitlab_logs_dir }}"
+     - "{{ gitlab_data_dir }}"
+     
+ 
+   - name: Install Gitlab container
+     docker_container:
+      name: mygit
+      image: "{{ image }}"
+      state: started
+      ports:
+        - "{{ gitlab_http_port }}:80"
+        - "{{ gitlab_https_port }}:443"
+      volumes:
+        - "{{ gitlab_config_dir }}:/etc/gitlab"
+        - "{{ gitlab_logs_dir }}:/var/log/gitlab"
+        - "{{ gitlab_data_dir }}:/var/opt/gitlab"
+      restart_policy: always
+      #notify: restart docker
+      
+      
+      
+  handlers:
+    - name: restart docker
+      service:
+         name: docker
+         state: restarted    
+
+   
+ 
+
+     
+ 

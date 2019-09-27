@@ -5,7 +5,7 @@
     #remote_user: admin
     #become: yes
     #become_method: sudo
-    gitlab_image: "gitlab/gitlab-ce"
+    image: "gitlab/gitlab-ce"
     gitlab_ssh_port: "2222"
     gitlab_https_port: "443"
     gitlab_http_port: "80"
@@ -18,12 +18,15 @@
   
   
   tasks:
- 
+   
+   #Etape 1: mise à jour de tout les packages   
    - name: "update package"
      apt:
         update_cache: yes
- 
-   - name: Install packages for apt add repository over HTTPS
+        
+                        
+   #Etape 2: Installation de packets necessaires
+   - name: Installation des packets necessaires pour la suite
      apt:
           name: "{{ packagesdep }}"
           force_apt_get: yes
@@ -40,23 +43,48 @@
           - software-properties-common
           - ca-certificates
           - apt-transport-https
-          
-          
+   
+   
+   #---------------------------------------------------------------------------------------------------------#       
+   #Il y a plusieurs manière d'ajouter la clef, shell ou en utilisant le module apt_key                      #
+   ###########################################################################################################
+         
+   #- name: Add Docker GPG apt Key
+   #  apt_key:
+   #     url: https://download.docker.com/linux/debian/gpg
+   #     state: present  
+             
    - name: Add Docker GPG apt Key
      shell: curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
-     
+  
+       
    - name: fingerprint 
      shell: apt-key fingerprint 0EBFCD88
-     
+   
+   
+   
+   #---------------------------------------------------------------------------------------------------------#       
+   #Il y a plusieur maniere d'ajouter le repo                                                                #
+   ###########################################################################################################
+            
+   #- name: add docker official repository for Debian Stretch
+   #   apt_repository:
+   #       repo: deb [arch=amd64] https://download.docker.com/linux/debian buster stable
+   #       state: present
+            
    - name: dd docker official repository
      shell: add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"
+     
+             
  
-   - name: "update package"
+ 
+   #On update le repo à nouveau on peut faire un handler avec   
+   - name: "update package 2"
      apt:
         update_cache: yes
         
    
-   - name: "Installation de docker "
+   - name: "Installation de docker-ce "
      apt: 
         name: docker-ce 
         state: latest
@@ -71,18 +99,18 @@
         name: containerd.io  
         state: latest   
         
-   - name: "Installation de pip "
+   - name: "Installation de python-pip "
      apt: 
         name: python-pip  
         state: latest   
         
-   - name: "Installation de pip "
+   - name: "Installation de  python-setuptools "
      apt: 
        name: python-setuptools  
        state: latest   
         
         
-   - name: "Installation de pip "
+   - name: "Installation de python-docker "
      apt: 
         name: python-docker 
         state: latest     
@@ -94,16 +122,16 @@
       
       
       
-   - name: "pip instal docker"
+   - name: "pip install docker"
      pip:
       name: "docker"
       virtualenv: "/usr/local/bin/docker/virtualenv"
       
      
              
-   - name: pull an image
+   - name: pull de l'image {{ image }}
      docker_image:
-        name: gitlab/gitlab-ce
+        name: "{{ image }}"
         source: pull  
         
    - name: Create gitlab directories
@@ -117,7 +145,7 @@
    - name: Install Gitlab container
      docker_container:
       name: mygit
-      image: "{{ gitlab_image }}"
+      image: "{{ image }}"
       state: started
       ports:
         - "{{ gitlab_http_port }}:80"
