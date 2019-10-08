@@ -1,0 +1,15 @@
+#l'image pour le runner
+image: debian 
+
+#avant le script
+before_script:
+  - apt-get update --quiet --yes
+  
+
+- `AWS_DEFAULT_REGION` => eu-west-1
+- `AWS_SECRET_ACCESS_KEY` => vpV1VvZ6lVhv5fABvZzIrrCFt1iIIRDRM/9gJWVM
+- `AWS_ACCESS_KEY_ID` => AKIASFDKCHAGF3W4IJ6V
+- `AWS_S3_LOCATION` => s3://rony-codepipeline-deployment/sample/SampleApp_Linux.zip
+
+
+
